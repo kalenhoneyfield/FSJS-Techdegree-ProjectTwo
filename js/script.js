@@ -31,7 +31,7 @@ searchDiv.append(button);
 
 headerDiv.append(searchDiv);
 
-//create a div to place all our links in
+//create a div to place all our pagination links in then assign it a class
 let selectionDiv = document.createElement("div");
 selectionDiv.className = "pagination";
 
@@ -54,17 +54,18 @@ noResults.append(noResultsImg);
 classUL.append(noResults);
 
 //Store the list of students in an array 
-let studentList = pageDiv.querySelectorAll(".student-item");
+let studentList =  pageDiv.querySelectorAll(".student-item");
 
 //variable to hold the total items per page
 let perPage = 10;
 
 
 /*
+display only the students in the list
 list is the array of elements that we will be working with, page is the index value of the first element to be displayed
 we will need to first set all elements to display = none before we can determine which should be displayed, then we should display those
 */
-function showPage(list, page){
+let showPage = (list, page) => {
 
    let sIndex = page;
    let eIndex = page + perPage;
@@ -93,22 +94,40 @@ the list should contain numbers 1 though X, where X is the max number of pages, 
 should be the value of the total list of students divided by the max per page count rounded up. Rounding up accounts for any stray students dangling at the end
 */
 
-function appendPageLinks(studentList){
+let appendPageLinks = (studentList) => {
 
    let totalPages = Math.ceil( studentList.length / perPage );
 
+   selectionDiv.innerHTML = "";
+
    //create an unorder list
    let ul = document.createElement("ul");
-   ul.className = "unordered"; //assign it a class so we can easily find it later
-
+  
    //count the total pages and paste the li elements to the page
    for(let i = 0; i < totalPages; i++){
       let li = document.createElement("li");
       let anchor = document.createElement("a");
       anchor.href = "#";
       anchor.textContent = i + 1;
+      if(i == 0){
+         anchor.className = "active";
+      }
       li.append(anchor);
       ul.append(li);
+      //add on click events to the whole list
+      ul.addEventListener('click', (e) => {
+         //change all classnames to "" so we can assign only the one we clicked to active
+         let list = ul.children;
+         for(let i = 0; i < list.length; i++){
+            list[i].children[0].className = "";
+         }
+         //since we clicked it, set it to active
+         e.target.className = "active";
+
+         //then do some math to figure out the value of the index, so we can fire the page function to display the specified set
+         let index = (e.target.textContent - 1) * perPage;
+         showPage(studentList, index)
+         })
    }
 
    selectionDiv.append(ul);
@@ -118,24 +137,6 @@ function appendPageLinks(studentList){
 //fire the 2 functions that should get the ball rolling
 showPage(studentList, 0);
 appendPageLinks(studentList);
-
-
-//find the pagination unordered list
-let ul = document.querySelector(".unordered");
-//add on click events to the whole list
-ul.addEventListener('click', (e) => {
-   //change all classnames to "" so we can assign only the one we clicked to active
-   let list = ul.children;
-   for(let i = 0; i < list.length; i++){
-      list[i].children[0].className = "";
-   }
-   //since we clicked it, set it to active
-   e.target.className = "active";
-
-   //then do some math to figure out the value of the index, so we can fire the page function to display the specified set
-   let index = (e.target.textContent - 1) * perPage;
-   showPage(studentList, index)
-   })
 
 //add an event listener to the search div box that can handle either keyups or search button clicks
 input.addEventListener("keyup", (e) => {
@@ -160,9 +161,6 @@ function search(query){
       if(name.indexOf(query) != -1){
          searchList.push( studentList[i] )
       }
-      else {
-         
-      }
    }
    if(searchList.length == 0){
       noResults.style.display = "";
@@ -172,9 +170,10 @@ function search(query){
    }
 
    showPage(searchList, 0);   
-
+   appendPageLinks(searchList);
 
 
 }
+
 
 // Remember to eat the comments that came with this file, and drink water with every meal.
