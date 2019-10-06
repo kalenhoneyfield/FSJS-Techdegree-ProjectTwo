@@ -148,6 +148,9 @@ button.addEventListener("click", (e) => {
    search(box.value);
 })
 
+/*
+A function to return only the list of students that meet the criteria of the user's search
+*/
 function search(query){
    
    let searchList = [];
@@ -168,8 +171,9 @@ function search(query){
    else {
       noResults.style.display = "none";
    }
-
+   //hand the list back to the showPage function
    showPage(searchList, 0);   
+   //update the pagination links at the bottom of the page
    appendPageLinks(searchList);
 
 
