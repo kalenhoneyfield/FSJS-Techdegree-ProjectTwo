@@ -45,10 +45,18 @@ noResults.style.display = "none";
 noResults.style.textAlign = "center";
 let noResultsText = document.createElement("span");
 noResultsText.style.fontSize = "18px";
-noResultsText.textContent = "We don't seem to have a student that meets your search criteria, but here's a pretty picture."
+noResultsText.innerHTML = "We don't seem to have a student that meets your search criteria, but here's a pretty picture.<br>"
 noResults.append(noResultsText);
 let noResultsImg = document.createElement("img");
-noResultsImg.setAttribute("src", "https://picsum.photos/800");
+/*
+ find the width of the element so we can assign a friendly picture size later, 
+ after we find the width, round down to the nearest 100, then subtract 200 to fit inside the div
+ note this won't be updated so if the user adjusts the screen size it may pop up of the div wonkily
+*/ 
+let imgWidth = (Math.floor(pageDiv.offsetWidth / 100) * 100) - 200;
+//build the URL for the image
+let imgURL = "https://picsum.photos/" + imgWidth;
+noResultsImg.setAttribute("src", imgURL);
 noResults.append(noResultsImg);
 
 classUL.append(noResults);
@@ -179,5 +187,5 @@ function search(query){
 
 }
 
-
+console.log(Math.floor(pageDiv.offsetWidth / 100) * 100)
 // Remember to eat the comments that came with this file, and drink water with every meal.
